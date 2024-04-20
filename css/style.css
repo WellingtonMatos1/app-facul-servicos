@@ -1,0 +1,54 @@
+:root {
+    --background-color: linear-gradient(0deg, rgba(5,52,78,1) 0%, rgba(28,155,226,1) 100%);
+    --primary-color: #1C9BE2;
+    --secondary-color: rgb(28,155,226,0.4);
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    background: var(--primary-color);
+    padding: 15px 20px;
+}
+
+#navbar #linkVoltar {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.servicos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+.servicos .divImg {
+    width: 100%;
+    background: var(--primary-color);
+}
+
+.servicos .divImg img {
+    margin: 20px;
+}
+
+.servicos .descricao {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 700;
+}

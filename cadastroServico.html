@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/cadastroServico.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+
+<body class="teste">
+    <div id="navbar"></div>
+
+    <main id="container">
+        <form id="formCadastroServico">
+            <div class="formHeader">
+                <h1>
+                    Cadastro de serviço
+                </h1>
+            </div>
+            <div id="inputs">
+                <div class="input-box">
+                    <div class="input-field">
+                        <input type="text" id="name" name="name" placeholder="Nome">
+                    </div>
+                </div>
+
+
+                <div class="input-box">
+                    <div class="input-field">
+                        <input type="text" id="preco" name="preco" placeholder="Preço">
+                    </div>
+                </div>
+
+
+                <div class="input-box">
+                    <div class="input-field">
+                        <input type="text" id="descricao" name="descricao" placeholder="Descrição">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btnCadastrar" type="button">
+                Cadastrar Serviço
+            </button>
+        </form>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/main.js"></script>
+    <script>
+        $(".btnCadastrar").click(function () {
+            $.ajax({
+                url: "/servico",
+                method: "POST",
+                type: "POST",
+                data: {
+                    nome: $("#name").val(),
+                    preco: $("#preco").val(),
+                    descricao: $("#descricao").val()
+                },
+                success: () => {
+                    window.location.href = "servicos.html";
+                },
+                error: () => {
+                    alert("Não foi possivel cadastrar o serviço.");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

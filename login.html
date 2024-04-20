@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <form class="formLogin">
+        <div class="top">
+            <h1>Bem Vindo!</h1>
+        </div>
+        <div class="down">
+            <input class="inputEmail" type="email" placeholder="Email">
+            <input class="inputPass" type="password" placeholder="Senha">
+            <button class="btnAcessar" type="button">Acessar</button>
+            <a class="linkCadastrar" href="">Cadastre-se</a>
+        </div>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(".btnAcessar").click(function () {
+            $.ajax({
+                url: "/login",
+                method: "POST",
+                type: "POST",
+                data: {
+                    login: $(".login").val(),
+                    senha: $(".senha").val()
+                },
+                success: () => {
+                    window.location.href = "index.html";
+                },
+                error: () => {
+                    alert("Usuário ou senha inválidos");
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+.servico {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+.divImg {
+    width: 100%;
+    background: var(--primary-color);
+}
+
+.divImg img {
+    margin: 20px;
+}
+
+.servico .descricao {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 700;
+}
