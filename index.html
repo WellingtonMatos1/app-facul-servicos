@@ -20,7 +20,11 @@
     <script>
         $.ajax({
             url: "/servicos",
-            method: "GET",
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             success: (response) => {
                 response = JSON.parse(response);
 

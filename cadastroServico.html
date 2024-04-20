@@ -53,14 +53,15 @@
     <script src="js/main.js"></script>
     <script>
         $(".btnCadastrar").click(function () {
+            data = $("#formCadastroServico").serializeArray();
+            
             $.ajax({
                 url: "/servico",
-                method: "POST",
                 type: "POST",
-                data: {
-                    nome: $("#name").val(),
-                    preco: $("#preco").val(),
-                    descricao: $("#descricao").val()
+                data: JSON.stringify(dataToSend),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 success: () => {
                     window.location.href = "servicos.html";

@@ -28,7 +28,11 @@
 
         $.ajax({
             url: "/servicos/" + id,
-            method: "GET",
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             success: (response) => {
                 response = JSON.parse(response);
 

@@ -27,13 +27,18 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(".btnAcessar").click(function () {
+            dataToSend = {
+                email: $(".inputEmail").val(),
+                senha: $(".inputPass").val()
+            };
+
             $.ajax({
                 url: "/login",
-                method: "POST",
                 type: "POST",
-                data: {
-                    login: $(".login").val(),
-                    senha: $(".senha").val()
+                data: JSON.stringify(dataToSend),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 success: () => {
                     window.location.href = "index.html";
