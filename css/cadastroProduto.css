@@ -92,16 +92,16 @@ main {
 
 .remove-button {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 10px;
+    right: 10px;
     background-color: #fff;
     border: 1px solid #ccc;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-    display: none;
+    z-index: 2;
 }
+
 
 .product-form .input-field {
     width: 100%;
