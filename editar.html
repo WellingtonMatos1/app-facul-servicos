@@ -2,22 +2,20 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/cadastro.css">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Document</title>
+    <header class="header">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/editar.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <title>Document</title>
+    </header>
 </head>
-<header>
-    <a href="login.html" class="btn-login">Login</a>
-</header>
+
 <body class="teste">
     <main id="container">
         <form id="form_login">
             <div id="form_header">
-                <h1>
-                    Cadastre-se
-                </h1>
             </div>
             <div id="inputs">
                 <div class="input-box">
@@ -55,23 +53,33 @@
                 </div>
             </div>
 
-            <button class="btnCadastrar" type="button">
-                Cadastrar
+            <button class="btnEditar" type="button">
+                Editar
             </button>
         </form>
     </main>
+    <footer>
+        <button class="btnhome" type="button">
+            <i class="fas fa-home"></i>
+        </button>
+    </footer>
+    <script>
+        document.querySelector('.btnhome').addEventListener('click', function() {
+            window.location.href = 'main.html';
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
     <script>
-        $(".btnCadastrar").click(function() {
+        $(".btnEditar").click(function() {
             const nome = $("#nome").val();
             const cpf = $("#cpf").val();
             const email = $("#email").val();
             const telefone = $("#telefone").val();
             const senha = $("#senha").val();
 
-            // Verificações de validação no frontend
             if (!nomeValido(nome)) {
                 alert("Nome inválido. Deve conter apenas letras e espaços.");
                 return;
@@ -107,7 +115,6 @@
                 return;
             }
 
-            // Envie os dados para o servidor se todas as verificações passarem
             const dataToSend = {
                 nome: nome,
                 cpf: cpf,
@@ -118,7 +125,7 @@
 
             $.ajax({
                 url: "http://localhost:8000/fornecedor",
-                type: "POST",
+                type: "PUT",
                 data: JSON.stringify(dataToSend),
                 headers: {
                     'Accept': 'application/json',
@@ -135,7 +142,6 @@
             });
         });
 
-        // Funções de validação
         function nomeValido(nome) {
             return /^[a-zA-Z\s]+$/.test(nome);
         }
@@ -152,7 +158,6 @@
             return /^\d{10,11}$/.test(telefone);
         }
 
-        // Função para verificar duplicidade de dados
         function verificarDuplicidade(campo, valor) {
             const valoresExistentes = [];
             $(".input-field input").each(function() {

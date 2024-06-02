@@ -1,11 +1,12 @@
 #form_login {
-    height: 100vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: var(--background-color);
+    background: var(--background-color-editar);
     gap: 2rem;
+    margin-bottom: 80px;
 }
 
 #inputs {
@@ -34,13 +35,11 @@
     width: 320px;
     height: 30px;
     padding: 0px 10px;
+    background-color: #42b5f760;
+    color: black;
 }
 
-#form_header h1 {
-    color: white;
-}
-
-.btnCadastrar {
+.btnEditar {
     width: 60%;
     padding: 15px 20px;
     border: none;
@@ -50,21 +49,6 @@
     color: white;
     background-color: #1C9BE2;
     cursor: pointer;
+    margin-top: 10px;
 }
 
-.btn-login {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: var(--background-color);
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    position: fixed;
-    left: 20px;
-    top: 20px;
-}
-
-.btn-sair:hover {
-    background-color: #137BC8;
-}
