@@ -1,32 +1,16 @@
-from fastapi import FastAPI, HTTPException, status, Request
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
-from database import SessionLocal
+from fastapi import HTTPException, status
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 import models
 import re
 from email_validator import validate_email, EmailNotValidError
 
-app = FastAPI()
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    messages = []
-    for error in exc.errors():
-        field_path = " -> ".join(map(str, error["loc"]))
-        messages.append(f"{field_path}: {error['msg']}")
-    
-    return JSONResponse(
-        status_code=422,
-        content={
-            "message": "Erro de validação",
-            "details": messages,
-        },
-    )
-
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class FornecedorService:
     def __init__(self, db):
         self.db = db
+        self.auth_service = AuthService(db)
 
     def is_valid_name(self, name: str) -> bool:
         return bool(re.match(r"^[a-zA-Z\s]+$", name))
@@ -55,7 +39,6 @@ class FornecedorService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fornecedor não encontrado")
 
     def create(self, fornecedor):
-        
         if not self.is_valid_name(fornecedor.nome):
             raise HTTPException(status_code=422, detail="Nome inválido. Deve conter apenas letras e espaços.")
 
@@ -74,11 +57,12 @@ class FornecedorService:
         if self.db.query(models.Fornecedor).filter(models.Fornecedor.email == fornecedor.email).first():
             raise HTTPException(status_code=409, detail="E-mail já cadastrado.")
 
+        hashed_password = self.auth_service.get_password_hash(fornecedor.senha)
         new_fornecedor = models.Fornecedor(
             nome=fornecedor.nome,
             cpf=fornecedor.cpf,
             telefone=fornecedor.telefone,
-            senha=fornecedor.senha,
+            senha=hashed_password,
             email=fornecedor.email
         )
 
@@ -88,9 +72,9 @@ class FornecedorService:
         return new_fornecedor
 
     def update(self, fornecedor_id: int, fornecedor):
-        
         find_fornecedor = self.db.query(models.Fornecedor).filter(models.Fornecedor.id == fornecedor_id).first()
-        if not find_fornecedor: raise HTTPException(status_code=404, detail="Fornecedor não encontrado.")
+        if not find_fornecedor:
+            raise HTTPException(status_code=404, detail="Fornecedor não encontrado.")
 
         if fornecedor.nome and not self.is_valid_name(fornecedor.nome):
             raise HTTPException(status_code=422, detail="Nome inválido. Deve conter apenas letras e espaços.")
@@ -123,7 +107,7 @@ class FornecedorService:
         if fornecedor.telefone:
             find_fornecedor.telefone = fornecedor.telefone
         if fornecedor.senha:
-            find_fornecedor.senha = fornecedor.senha
+            find_fornecedor.senha = pwd_context.hash(fornecedor.senha)
         if fornecedor.email:
             find_fornecedor.email = fornecedor.email
 
@@ -139,3 +123,24 @@ class FornecedorService:
             return find_fornecedor
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Fornecedor não encontrado")
+
+from fastapi import HTTPException, status
+
+class AuthService:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def verify_password(self, plain_password, hashed_password):
+        return pwd_context.verify(plain_password, hashed_password)
+
+    def get_password_hash(self, password):
+        return pwd_context.hash(password)
+
+    def authenticate_user(self, email: str, password: str):
+        user = self.db.query(models.Fornecedor).filter(models.Fornecedor.email == email).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+        if not self.verify_password(password, user.senha):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Senha incorreta")
+        return user
+

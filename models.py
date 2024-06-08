@@ -8,14 +8,14 @@ def create_tables():
 
 
 class Fornecedor(Base):
-    __tablename__ = 'fornecedor'
+    __tablename__ = 'fornecedores'
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(40), nullable=False)
-    cpf = Column(String(14), nullable=False)
+    cpf = Column(String(11), nullable=False)
     telefone = Column(String(11), nullable=False)
-    senha = Column(String(40), nullable=False)
-    email = Column(String(40), nullable=False)
-    servicos = relationship('Servico', backref='fornecedor', cascade="all, delete-orphan", single_parent=True)
+    senha = Column(String(120), nullable=False)
+    email = Column(String(80), nullable=False)
+    servicos = relationship('Servico', backref='fornecedores', cascade="all, delete-orphan", single_parent=True)
 
 
 class Servico(Base):
@@ -25,4 +25,4 @@ class Servico(Base):
     descricao = Column(String(100), nullable=False)
     preco = Column(String(40), nullable=False)
     imagem = Column(String(100), nullable=False)
-    fornecedor_id = Column(Integer, ForeignKey('fornecedor.id'), nullable=False)
+    fornecedor_id = Column(Integer, ForeignKey('fornecedores.id'), nullable=False)
