@@ -1,3 +1,4 @@
+import bcrypt
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -99,20 +100,23 @@ class FornecedorService:
         ).first():
             raise HTTPException(status_code=409, detail="E-mail já em uso por outro fornecedor.")
 
+        if fornecedor.senha:
+            hashed_password = self.auth_service.get_password_hash(fornecedor.senha)
+            find_fornecedor.senha = hashed_password
+
         if fornecedor.nome:
             find_fornecedor.nome = fornecedor.nome
         if fornecedor.cpf:
             find_fornecedor.cpf = fornecedor.cpf
         if fornecedor.telefone:
             find_fornecedor.telefone = fornecedor.telefone
-        if fornecedor.senha:
-            find_fornecedor.senha = pwd_context.hash(fornecedor.senha)
         if fornecedor.email:
             find_fornecedor.email = fornecedor.email
 
         self.db.commit()
         self.db.refresh(find_fornecedor)
         return find_fornecedor
+
 
     def delete(self, fornecedor_id: int):
         find_fornecedor = self.db.query(models.Fornecedor).filter(models.Fornecedor.id == fornecedor_id).first()
@@ -130,10 +134,10 @@ class AuthService:
         self.db = db
 
     def verify_password(self, plain_password, hashed_password):
-        return pwd_context.verify(plain_password, hashed_password)
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
     def get_password_hash(self, password):
-        return pwd_context.hash(password)
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     def authenticate_user(self, email: str, password: str):
         user = self.db.query(models.Fornecedor).filter(models.Fornecedor.email == email).first()

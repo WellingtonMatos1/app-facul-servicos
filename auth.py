@@ -42,19 +42,19 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
-    create_user_model = Fornecedor(
-        nome=create_user_request.nome,
-        senha=bcrypt.hash(create_user_request.senha),
-        cpf=create_user_request.cpf,
-        telefone=create_user_request.telefone,
-        email=create_user_request.email
-    )
+# @router.post("/", status_code=status.HTTP_201_CREATED)
+# async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+#     create_user_model = Fornecedor(
+#         nome=create_user_request.nome,
+#         senha=bcrypt.hash(create_user_request.senha),
+#         cpf=create_user_request.cpf,
+#         telefone=create_user_request.telefone,
+#         email=create_user_request.email
+#     )
 
-    db.add(create_user_model)
-    db.commit()
-    return {"message": "User created successfully"}
+#     db.add(create_user_model)
+#     db.commit()
+#     return {"message": "User created successfully"}
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):

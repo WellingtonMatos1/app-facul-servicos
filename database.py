@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 
 nome_banco = "trab"
 usuario_postgres = "postgres"
-senha_postgres = "senha_aqui"
+senha_postgres = "123"
 host_postgres = "localhost"
 porta_postgres = "5432"
 
