@@ -5,7 +5,6 @@ import models
 import re
 from email_validator import validate_email, EmailNotValidError
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class FornecedorService:
     def __init__(self, db):
