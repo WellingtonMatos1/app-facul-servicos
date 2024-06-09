@@ -35,7 +35,7 @@ async def user(user: user_dependency, db: db_dependency):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"], 

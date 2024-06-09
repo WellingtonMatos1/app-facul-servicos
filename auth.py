@@ -41,7 +41,6 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     create_user_model = Fornecedor(
@@ -77,7 +76,6 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     expires = datetime.utcnow() + expires_delta
     encode.update({"exp": expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 async def get_current_user(token: Annotated [str, Depends(oauth2_bearer)]):
     try:
