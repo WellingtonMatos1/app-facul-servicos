@@ -28,19 +28,20 @@
     <script>
         $(".btnAcessar").click(function () {
             dataToSend = {
-                email: $(".inputEmail").val(),
-                senha: $(".inputPass").val()
+                username: $(".inputEmail").val(),
+                password: $(".inputPass").val()
             };
 
             $.ajax({
-                url: "/login",
+                url: "http://127.0.0.1:8000/login",
                 type: "POST",
-                data: JSON.stringify(dataToSend),
+                data: dataToSend,
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                success: () => {
+                success: (response) => {
+                    sessionStorage.setItem("access_token", response.access_token);
                     window.location.href = "index.html";
                 },
                 error: () => {

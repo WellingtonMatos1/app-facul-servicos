@@ -1,5 +1,9 @@
 $(document).ready(function () {
-    $('#navbar').load('navbar.html');
+    $('#navbar').load('/navbar.html', () => {
+        if (sessionStorage.getItem('access_token') != null) {
+            $("#cadastroServico").show();
+        }
+    });
 });
 
 function getParameterByName(name, url) {

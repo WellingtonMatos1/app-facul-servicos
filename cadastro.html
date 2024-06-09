@@ -107,7 +107,6 @@
                 return;
             }
 
-            // Envie os dados para o servidor se todas as verificações passarem
             const dataToSend = {
                 nome: nome,
                 cpf: cpf,
@@ -117,7 +116,7 @@
             };
 
             $.ajax({
-                url: "http://localhost:8000/fornecedor",
+                url: "http://127.0.0.1:8000/register",
                 type: "POST",
                 data: JSON.stringify(dataToSend),
                 headers: {
@@ -126,11 +125,11 @@
                 },
                 success: function() {
                     alert("Cadastro bem-sucedido!");
-                    limparCampos();
+                    window.location.href = "login.html";
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error("Erro:", textStatus, errorThrown);
-                    alert("Erro ao cadastrar.");
+                error: function(response) {
+                    response = response.responseJSON;
+                    alert(response.detail);
                 },
             });
         });
