@@ -51,7 +51,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 #         telefone=create_user_request.telefone,
 #         email=create_user_request.email
 #     )
-
 #     db.add(create_user_model)
 #     db.commit()
 #     return {"message": "User created successfully"}
