@@ -1,30 +1,32 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, File, UploadFile
 from pydantic import BaseModel
 from typing import List, Optional
+import os
+import shutil
+
 from database import SessionLocal
 from models import Servico
 from service_servico import ServicoService
-from auth import get_current_user  # Certifique-se de importar a função get_current_user corretamente
-from typing import Annotated
+from auth import get_current_user
 
 router = APIRouter()
 db = SessionLocal()
 servico_service = ServicoService(db)
 
+UPLOAD_FOLDER = "/imagem/servicos/"  # Altere para o caminho correto em seu sistema
+
 class ServicoBase(BaseModel):
     nome: str
     descricao: str
     preco: str
-    imagem: str
 
 class ServicoCreate(ServicoBase):
-    pass  # Removemos fornecedor_id daqui
+    imagem: UploadFile
 
 class ServicoUpdate(ServicoBase):
     nome: Optional[str]
     descricao: Optional[str]
     preco: Optional[str]
-    imagem: Optional[str]
 
 class ServicoOut(BaseModel):
     id: int
@@ -61,19 +63,26 @@ def get_servico(servico_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/servico", response_model=ServicoOut, status_code=status.HTTP_201_CREATED)
-def create_servico(servico: ServicoCreate, current_user: Annotated[dict, Depends(get_current_user)]):
+def create_servico(servico: ServicoCreate, current_user: dict = Depends(get_current_user)):
     try:
-        fornecedor_id = current_user["id"]  # Obtenha o fornecedor_id a partir do token do usuário
+        fornecedor_id = current_user["id"]
+        filename = f"{fornecedor_id}_{servico.imagem.filename}"
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        with open(file_path, "wb") as image_file:
+            shutil.copyfileobj(servico.imagem.file, image_file)
+
         novo_servico = Servico(
             nome=servico.nome,
             descricao=servico.descricao,
             preco=servico.preco,
-            imagem=servico.imagem,
+            imagem=filename,
             fornecedor_id=fornecedor_id
         )
         return servico_service.create(novo_servico)
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        error_msg = f"Erro ao salvar arquivo de imagem: {str(e)}"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_msg)
 
 @router.put("/servico/{servico_id}", response_model=ServicoOut, status_code=status.HTTP_200_OK)
 def update_servico(servico_id: int, servico: ServicoUpdate):

@@ -31,6 +31,7 @@ class CreateUserRequest(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    fornecedor_id: int
 
 def get_db():
     db = SessionLocal()
@@ -61,7 +62,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
     token = create_access_token(user.email, user.id, timedelta(minutes=20))
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "fornecedor_id": user.id}
 
 def authenticate_user(username: str, password: str, db: Session):
     user = db.query(Fornecedor).filter(Fornecedor.email == username).first()
