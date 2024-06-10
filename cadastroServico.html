@@ -1,77 +1,91 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Serviço</title>
     <link rel="stylesheet" href="css/cadastroServico.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
-<body class="teste">
+<body>
     <div id="navbar"></div>
 
-    <main id="container">
-        <form id="formCadastroServico">
-            <div class="formHeader">
-                <h1>
-                    Cadastro de serviço
-                </h1>
+    <div class="container">
+        <main>
+            <div class="service-form">
+                <div class="image-upload">
+                    <input type="file" id="serviceImage" accept="image/*">
+                    <label for="serviceImage" class="image-placeholder">+</label>
+                    <div class="image-preview"></div>
+                    <button class="remove-button" id="removeButton" style="display: none;">Remover</button>
+                </div>
+                <input type="text" id="nome" placeholder="Nome do servico" class="input-field">
+                <input type="number" id="preco" placeholder="Preço do servico" class="input-field">
+                <input type="text" id="descricao" placeholder="Descrição" class="input-field">
+                <button type="button" id="addserviceButton" class="submit-button">Cadastrar servico</button>
             </div>
-            <div id="inputs">
-                <div class="input-box">
-                    <div class="input-field">
-                        <input type="text" id="name" name="name" placeholder="Nome">
-                    </div>
-                </div>
+        </main>
 
-
-                <div class="input-box">
-                    <div class="input-field">
-                        <input type="text" id="preco" name="preco" placeholder="Preço">
-                    </div>
-                </div>
-
-
-                <div class="input-box">
-                    <div class="input-field">
-                        <input type="text" id="descricao" name="descricao" placeholder="Descrição">
-                    </div>
-                </div>
-            </div>
-
-            <button class="btnCadastrar" type="button">
-                Cadastrar Serviço
+        <!-- <footer>
+            <button class="btnhome" type="button">
+                <i class="fas fa-home"></i>
             </button>
-        </form>
-    </main>
+        </footer> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="js/main.js"></script>
-    <script>
-        $(".btnCadastrar").click(function () {
-            data = $("#formCadastroServico").serializeArray();
-            
-            $.ajax({
-                url: "/servico",
-                type: "POST",
-                data: JSON.stringify(dataToSend),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                success: () => {
-                    window.location.href = "servicos.html";
-                },
-                error: () => {
-                    alert("Não foi possivel cadastrar o serviço.");
-                }
+        <div id="footer"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="js/main.js"></script>
+        <script src="js/cadastroServicos.js"></script>
+        <script>
+            if (localStorage.getItem("access_token") == null) {
+                window.location.href = "login.html";
+            }
+
+            $("#addserviceButton").click(function () {
+                var fileInput = $("#serviceImage")[0].files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = {
+                        'nome': $("#nome").val(),
+                        'descricao': $("#descricao").val(),
+                        'preco': $("#preco").val(),
+                        'imagem': e.target.result
+                    };
+
+                    const token = localStorage.getItem("access_token");
+
+                    $.ajax({
+                        url: "http://127.0.0.1:8080/servico",
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        contentType: "application/json",
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        success: () => {
+                            alert("Serviço cadastrado com sucesso!");
+                            $("#nome").val("");
+                            $("#descricao").val("");
+                            $("#preco").val("");
+                        },
+                        error: (xhr, textStatus, error) => {
+                            alert(xhr.responseJSON.detail);
+                        }
+                    });
+                };
+
+                reader.readAsDataURL(fileInput);
             });
-        });
-    </script>
+        </script>
+    </div>
 </body>
 
 </html>

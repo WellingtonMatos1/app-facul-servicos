@@ -2,17 +2,17 @@
 <html lang="pt-br">
 
 <head>
-    <header class="header">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/editar.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <title>Document</title>
-    </header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
-<body class="teste">
+<body>
+    <div id="navbar"></div>
+
     <main id="container">
         <form id="form_login">
             <div id="form_header">
@@ -58,22 +58,35 @@
             </button>
         </form>
     </main>
-    <footer>
-        <button class="btnhome" type="button">
-            <i class="fas fa-home"></i>
-        </button>
-    </footer>
-    <script>
-        document.querySelector('.btnhome').addEventListener('click', function() {
-            window.location.href = 'main.html';
-        });
-    </script>
+
+    <div id="footer"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-    </script>
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/main.js"></script>
     <script>
-        $(".btnEditar").click(function() {
+        const token = localStorage.getItem("access_token");
+        const fornecedor_id = localStorage.getItem("fornecedor_id");
+
+        $.ajax({
+            url: "http://127.0.0.1:8080/fornecedor/"+fornecedor_id,
+            type: "GET",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            success: function (response) {
+                $("#nome").val(response.nome);
+                $("#cpf").val(response.cpf);
+                $("#email").val(response.email);
+                $("#telefone").val(response.telefone);
+            },
+            error: function (response) {
+                console.error(response);
+            }
+        });
+
+        $(".btnEditar").click(function () {
             const nome = $("#nome").val();
             const cpf = $("#cpf").val();
             const email = $("#email").val();
@@ -115,6 +128,12 @@
                 return;
             }
 
+            // trim na senha
+            if (senha.trim() === "") {
+                alert("Preencha a senha.");
+                return;
+            }
+
             const dataToSend = {
                 nome: nome,
                 cpf: cpf,
@@ -123,19 +142,21 @@
                 senha: senha,
             };
 
+            const token = localStorage.getItem("access_token");
+
             $.ajax({
-                url: "http://localhost:8000/fornecedor",
+                url: "http://127.0.0.1:8080/fornecedor/"+fornecedor_id,
                 type: "PUT",
                 data: JSON.stringify(dataToSend),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                success: function() {
+                success: function () {
                     alert("Cadastro bem-sucedido!");
-                    limparCampos();
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     console.error("Erro:", textStatus, errorThrown);
                     alert("Erro ao cadastrar.");
                 },
@@ -160,7 +181,7 @@
 
         function verificarDuplicidade(campo, valor) {
             const valoresExistentes = [];
-            $(".input-field input").each(function() {
+            $(".input-field input").each(function () {
                 if ($(this).attr("id") !== campo && $(this).val() === valor) {
                     return true;
                 }

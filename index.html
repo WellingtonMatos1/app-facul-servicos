@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
@@ -13,13 +14,15 @@
 
     <div class="servicos"></div>
 
+    <div id="footer"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/main.js"></script>
-    <script>    
+    <script>
         $.ajax({
-            url: "http://127.0.0.1:8000/servico",
+            url: "http://127.0.0.1:8080/servico",
             type: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -33,15 +36,16 @@
                 response.forEach(servico => {
                     $(".servicos").append(`
                         <a href="/servico.html?id=` + servico.id + `">
-                            <div class="servicos">
-                                <div class="divImg"><img src="/img/servicos` + servico.img + `" alt="Imagem"></div>
-
-                                <div class="descricao">
-                                    <p>Cadastro: #` + servico.id + `</p>
-                                    <p>Nome: ` + servico.nome + `</p>
-                                    <p>Descrição: ` + servico.descricao + `</p>
+                            <div class="divImg">
+                                <img src="/img/servicos` + servico.imagem + `" alt="Imagem">
+                            </div>
+                            <div class="descricao">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p style="margin-bottom: 0;">Código: #` + servico.id + `</p>
                                     <p>Preço: ` + servico.preco + `</p>
                                 </div>
+                                <p style="margin-bottom: 0;">Nome: ` + servico.nome + `</p>
+                                <p style="margin-bottom: 0;">Descrição: ` + servico.descricao + `</p>
                             </div>
                         </a>
                     `);

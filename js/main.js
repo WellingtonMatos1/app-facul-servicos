@@ -1,7 +1,18 @@
 $(document).ready(function () {
     $('#navbar').load('/navbar.html', () => {
-        if (sessionStorage.getItem('access_token') != null) {
+        if (localStorage.getItem('access_token') != null) {
             $("#cadastroServico").show();
+        }
+
+        $("#linkVoltar").click(() => {
+            window.history.back();
+        });
+    });
+
+    $("#footer").load("/footer.html", () => {
+        if (localStorage.getItem('access_token') != null) {
+            $("#cadastroServico").attr("href", "/cadastroServico.html");
+            $("#cadastroServico").html('<i class="fas fa-plus-circle"></i>');
         }
     });
 });

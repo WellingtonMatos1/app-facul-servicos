@@ -71,7 +71,6 @@
             const telefone = $("#telefone").val();
             const senha = $("#senha").val();
 
-            // Verificações de validação no frontend
             if (!nomeValido(nome)) {
                 alert("Nome inválido. Deve conter apenas letras e espaços.");
                 return;
@@ -116,7 +115,7 @@
             };
 
             $.ajax({
-                url: "http://127.0.0.1:8000/register",
+                url: "http://127.0.0.1:8000/auth",
                 type: "POST",
                 data: JSON.stringify(dataToSend),
                 headers: {

@@ -33,7 +33,7 @@
             };
 
             $.ajax({
-                url: "http://127.0.0.1:8000/login",
+                url: "http://127.0.0.1:8080/auth/token",
                 type: "POST",
                 data: dataToSend,
                 headers: {
@@ -41,7 +41,8 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 success: (response) => {
-                    sessionStorage.setItem("access_token", response.access_token);
+                    localStorage.setItem("access_token", response.access_token);
+                    localStorage.setItem("fornecedor_id", response.fornecedor_id);
                     window.location.href = "index.html";
                 },
                 error: () => {

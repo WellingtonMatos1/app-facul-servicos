@@ -1,12 +1,19 @@
 #form_login {
-    height: 80vh;
+    /* height: 80vh; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background: var(--background-color-editar);
     gap: 2rem;
-    margin-bottom: 80px;
+    /* margin-bottom: 80px; */
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #inputs {

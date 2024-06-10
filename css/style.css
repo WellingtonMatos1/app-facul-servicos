@@ -19,18 +19,27 @@ a {
 }
 
 #navbar {
-    display: flex;
+    min-height: 50px;
     justify-content: space-between;
+}
+
+#navbar, #footer {
+    display: flex;
     background: var(--primary-color);
     padding: 15px 20px;
 }
 
-#navbar a {
+#footer {
+    justify-content: space-evenly;
+}
+
+#navbar a, #footer a {
     color: white;
     padding: 10px;
     text-decoration: none;
     font-size: 16px;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .servicos {
@@ -39,6 +48,11 @@ a {
     align-items: center;
     justify-content: center;
     margin: 20px;
+}
+
+.servicos a {
+    width: 100%;
+    margin-bottom: 50px;
 }
 
 .servicos .divImg {
@@ -115,13 +129,10 @@ footer {
     border: none;
     border-radius: 50%;
     width: 50px;
-    height: 50px;
+    min-height: 50px;
     font-size: 24px;
     color: #1C9BE2;
     cursor: pointer;
-    position: fixed;
-    top: 20px;
-    right: 20px;
 }
 
 .btn-perfil:hover {
