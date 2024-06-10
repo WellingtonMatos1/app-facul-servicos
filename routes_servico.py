@@ -1,32 +1,35 @@
-from fastapi import APIRouter, HTTPException, status, Depends, File, UploadFile
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import List, Optional
-import os
-import shutil
-
 from database import SessionLocal
 from models import Servico
 from service_servico import ServicoService
-from auth import get_current_user
+from auth import get_current_user  # Certifique-se de importar a função get_current_user corretamente
+from typing import Annotated
 
+import os
+import base64
+from io import BytesIO
+from PIL import Image
+import uuid
 router = APIRouter()
 db = SessionLocal()
 servico_service = ServicoService(db)
-
-UPLOAD_FOLDER = "/imagem/servicos/"  # Altere para o caminho correto em seu sistema
 
 class ServicoBase(BaseModel):
     nome: str
     descricao: str
     preco: str
+    imagem: str
 
 class ServicoCreate(ServicoBase):
-    imagem: UploadFile
+    pass  # Removemos fornecedor_id daqui
 
 class ServicoUpdate(ServicoBase):
     nome: Optional[str]
     descricao: Optional[str]
     preco: Optional[str]
+    imagem: Optional[str]
 
 class ServicoOut(BaseModel):
     id: int
@@ -63,27 +66,45 @@ def get_servico(servico_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/servico", response_model=ServicoOut, status_code=status.HTTP_201_CREATED)
-def create_servico(servico: ServicoCreate, current_user: dict = Depends(get_current_user)):
+def create_servico(
+    servico: ServicoBase,
+    current_user: Annotated[dict, Depends(get_current_user)]
+):
     try:
         fornecedor_id = current_user["id"]
-        filename = f"{fornecedor_id}_{servico.imagem.filename}"
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-
-        with open(file_path, "wb") as image_file:
-            shutil.copyfileobj(servico.imagem.file, image_file)
-
+        imagem_data = servico.imagem.split(",")[1]  # Remove o prefixo "data:image/jpeg;base64," para obter apenas os dados base64
+        imagem_bytes = base64.b64decode(imagem_data)
+        
+        # Gerar um nome aleatório para a imagem
+        imagem_nome = f"{uuid.uuid4()}.jpg"
+        
+        # Caminho para o diretório de imagens de serviços
+        diretorio_imagens = "/imagem/servicos"
+        
+        # Garantir que o diretório exista
+        if not os.path.exists(diretorio_imagens):
+            os.makedirs(diretorio_imagens)
+        
+        # Salvar a imagem em um arquivo temporário
+        caminho_imagem = os.path.join(diretorio_imagens, imagem_nome)
+        with open(caminho_imagem, "wb") as file:
+            file.write(imagem_bytes)
+        
+        # Criar uma instância do objeto Servico com o caminho da imagem temporária
         novo_servico = Servico(
             nome=servico.nome,
             descricao=servico.descricao,
             preco=servico.preco,
-            imagem=filename,
+            imagem=caminho_imagem,  # Caminho da imagem temporária
             fornecedor_id=fornecedor_id
         )
+        
+        # Agora você pode salvar o novo_servico no banco de dados
+        
         return servico_service.create(novo_servico)
     except Exception as e:
-        error_msg = f"Erro ao salvar arquivo de imagem: {str(e)}"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_msg)
-
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
 @router.put("/servico/{servico_id}", response_model=ServicoOut, status_code=status.HTTP_200_OK)
 def update_servico(servico_id: int, servico: ServicoUpdate):
     try:
