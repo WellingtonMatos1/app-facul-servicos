@@ -30,12 +30,6 @@
             </div>
         </main>
 
-        <!-- <footer>
-            <button class="btnhome" type="button">
-                <i class="fas fa-home"></i>
-            </button>
-        </footer> -->
-
         <div id="footer"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -53,7 +47,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    var data = {
+                    var servicoData = {
                         'nome': $("#nome").val(),
                         'descricao': $("#descricao").val(),
                         'preco': $("#preco").val(),
@@ -65,9 +59,12 @@
                     $.ajax({
                         url: "http://127.0.0.1:8080/servico",
                         type: "POST",
-                        data: JSON.stringify(data),
-                        contentType: "application/json",
+                        data: JSON.stringify(servicoData),
+                        contentType: false,
+                        processData: false,
                         headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
                         success: () => {
